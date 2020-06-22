@@ -13,11 +13,12 @@
 package proxy
 
 import (
-	"github.com/rapid7/go-get-proxied/winhttp"
 	"log"
 	"net/url"
 	"reflect"
 	"strings"
+
+	"github.com/rapid7/go-get-proxied/winhttp"
 )
 
 /*
@@ -126,7 +127,7 @@ func (p *providerWindows) readWinHttpProxy(protocol string, targetUrl *url.URL) 
 	// Internet Options
 	ieProxyConfig, err := p.getIeProxyConfigCurrentUser()
 	if err != nil {
-		log.Printf("[proxy.Provider.readWinHttpProxy] Failed to read IE proxy config: %s\n", err)
+		//log.Printf("[proxy.Provider.readWinHttpProxy] Failed to read IE proxy config: %s\n", err)
 	} else {
 		defer p.freeWinHttpResource(ieProxyConfig)
 		if ieProxyConfig.FAutoDetect {
@@ -134,7 +135,7 @@ func (p *providerWindows) readWinHttpProxy(protocol string, targetUrl *url.URL) 
 			if err == nil {
 				return proxy
 			} else if !isNotFound(err) {
-				log.Printf("[proxy.Provider.readWinHttpProxy] No proxy discovered via AutoDetect: %s\n", err)
+				//log.Printf("[proxy.Provider.readWinHttpProxy] No proxy discovered via AutoDetect: %s\n", err)
 			}
 		}
 		if autoConfigUrl := winhttp.LpwstrToString(ieProxyConfig.LpszAutoConfigUrl); autoConfigUrl != "" {
@@ -142,14 +143,14 @@ func (p *providerWindows) readWinHttpProxy(protocol string, targetUrl *url.URL) 
 			if err == nil {
 				return proxy
 			} else if !isNotFound(err) {
-				log.Printf("[proxy.Provider.readWinHttpProxy] No proxy discovered via AutoConfigUrl, %s: %s\n", autoConfigUrl, err)
+				//log.Printf("[proxy.Provider.readWinHttpProxy] No proxy discovered via AutoConfigUrl, %s: %s\n", autoConfigUrl, err)
 			}
 		}
 		proxy, err := p.parseProxyInfo(srcNamedProxy, protocol, targetUrl, ieProxyConfig.LpszProxy, ieProxyConfig.LpszProxyBypass)
 		if err == nil {
 			return proxy
 		} else if !isNotFound(err) {
-			log.Printf("[proxy.Provider.readWinHttpProxy] Failed to parse named proxy: %s\n", err)
+			//log.Printf("[proxy.Provider.readWinHttpProxy] Failed to parse named proxy: %s\n", err)
 		}
 	}
 	// netsh winhttp
@@ -157,7 +158,7 @@ func (p *providerWindows) readWinHttpProxy(protocol string, targetUrl *url.URL) 
 	if err == nil {
 		return proxy
 	} else if !isNotFound(err) {
-		log.Printf("[proxy.Provider.readWinHttpProxy] Failed to parse WinHttp default proxy info: %s\n", err)
+		//log.Printf("[proxy.Provider.readWinHttpProxy] Failed to parse WinHttp default proxy info: %s\n", err)
 	}
 	return nil
 }
